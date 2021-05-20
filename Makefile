@@ -9,4 +9,4 @@ install:
 
 test:
 	poetry run mypy certifia
-	poetry run pytest tests --cov=certifi  --cov-fail-under=85
+	poetry run pytest tests --cov=certifia  --cov-fail-under=85
