@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "certifia"
+version = "0.1.0"
+description = "our package for certification"
+authors = ["Ismaïl Lachheb <ismael.lachheb@protonmail.com>"]
+license = "Close Source"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pytest = "^6.2.4"
+pytest-sugar = "^0.9.4"
+pre-commit = "^2.12.1"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
