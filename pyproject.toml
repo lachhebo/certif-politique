@@ -12,6 +12,8 @@ pytest-sugar = "^0.9.4"
 pre-commit = "^2.12.1"
 mypy = "^0.812"
 flake8 = "^3.9.2"
+pandas = "^1.2.4"
+jupyter = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.12.0"
