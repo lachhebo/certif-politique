@@ -2,7 +2,7 @@
 name = "certifia"
 version = "0.1.0"
 description = "our package for certification"
-authors = ["Ismaïl Lachheb <ismael.lachheb@protonmail.com>"]
+authors = ["Ismaïl Lachheb <ismael.lachheb@protonmail.com>", "Fabien Roussel <fabien.roussel921@gmail.com>"]
 license = "Close Source"
 
 [tool.poetry.dependencies]
