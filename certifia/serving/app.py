@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -10,16 +9,20 @@ def predict():
     return "<p>Hello, World!</p>"
 
 
+
 @app.route("/")
 def root():
-    return render_template('app.html', name='ismael')
+    return render_template('form.html', name='ismael')
 
 
 @app.route('/data/', methods = ['POST', 'GET'])
 def data():
     if request.method == 'GET':
-        return f"The URL /data is accessed directly. Try going to '/form' to submit form"
+        return f"The URL /data is accessed directly. Try going to '/' to submit form"
     if request.method == 'POST':
+        print(request)
         form_data = request.form
-        return render_template('answer.html',form_data = form_data)
+        return render_template('data.html',form = form_data)
  
+
+app.run(host='localhost', port=5000)
