@@ -10,7 +10,7 @@ class DataBase(metaclass=Singleton):
     batch2_path: Path = Path(__file__).parent.parent.parent / 'data' / 'batch_2.db'
     test_path: Path = Path(__file__).parent.parent.parent / 'data' / 'test.db'
     name: str = ''
-    conn =  None
+    conn = None
     tables: List[str] = []
 
     def __enter__(self):
@@ -26,7 +26,6 @@ class Batch1DB(DataBase):
         self.conn = None
         self.name = 'batch1'
         self.tables = ['vols', 'aeroports', 'compagnies', 'prix_fuel']
-
 
     def __enter__(self):
         self.conn = sqlite3.connect(str(self.batch1_path))
