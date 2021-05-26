@@ -9,6 +9,7 @@ license = "Close Source"
 python = "^3.8"
 pandas = "^1.2.4"
 Flask = "^2.0.1"
+scikit-learn = "^0.24.2"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.12.0"
