@@ -1,6 +1,7 @@
 PHONY: setup the work environment
 setup:
 	cp hooks/commit-msg .git/hooks/
+	poetry install
 	pre-commit install
 
 

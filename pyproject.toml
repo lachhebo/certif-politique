@@ -7,17 +7,18 @@ license = "Close Source"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pytest = "^6.2.4"
-pytest-sugar = "^0.9.4"
-pre-commit = "^2.12.1"
-mypy = "^0.812"
-flake8 = "^3.9.2"
 pandas = "^1.2.4"
-jupyter = "^1.0.0"
+Flask = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest-cov = "^2.12.0"
 freezegun = "^1.1.0"
+pytest = "^6.2.4"
+pre-commit = "^2.13.0"
+jupyter = "^1.0.0"
+flake8 = "^3.9.2"
+mypy = "^0.812"
+pytest-sugar = "^0.9.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

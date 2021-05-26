@@ -6,7 +6,7 @@ from certifia.data_engineering.database import Batch1DB, Batch2DB, TestDB
 
 
 def read_db() -> Dict:
-    datasets = {}
+    datasets: Dict[str, pd.DataFrame] = {}
     for base in [Batch1DB(), Batch2DB(), TestDB()]:
         datasets[base.name] = {}
         for table in base.tables:
@@ -17,4 +17,3 @@ def read_db() -> Dict:
     return datasets
 
 
-read_db()
