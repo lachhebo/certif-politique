@@ -1,46 +1,53 @@
-from pathlib import Path
 from unittest.mock import patch
 
-TESTED_MODULE = 'certifia.database'
+from certifia.data_engineering.database import Batch1DB, Batch2DB, TestDB
+
+TESTED_MODULE = 'certifia.data_engineering.database'
 
 
-@patch(f'{TESTED_MODULE}.Path', return_value=Path('/root/api/database.py'))
-def test_session__is_connecting_to_the_good_database(path, monkeypatch):
+@patch(f'{TESTED_MODULE}.sqlite3.connect')
+def test_batch1_database_setup_connection_on_context_manager(mock_connect):
     # given
-    monkeypatch.setenv('DEBUG', 'False')
-    from certifia.data_engineering.database import Session
+    batch1 = Batch1DB()
+    batch1_path = 'fake_path'
+    batch1.batch1_path = 'fake_path'
 
     # when
-    sess = Session()
+
+    with batch1:
+        pass
 
     # then
-    assert sess.database_path == Path('/root/database/production/database.db')
+    mock_connect.assert_called_with(batch1_path)
 
 
-@patch(f'{TESTED_MODULE}.sqlite3')
-def test_get_user_password_by_email__return_user_password_if_user_found(m_sqlite, monkeypatch):
+@patch(f'{TESTED_MODULE}.sqlite3.connect')
+def test_batch2_database_setup_connection_on_context_manager(mock_connect):
     # given
-    monkeypatch.setenv('DEBUG', 'False')
-    from certifia.data_engineering.database import Session
-    sess = Session()
-    m_sqlite.connect().execute().fetchall.return_value = [('fake_password1',)]
+    batch2 = Batch2DB()
+    batch2_path = 'fake_path'
+    batch2.batch2_path = 'fake_path'
 
     # when
-    result = sess.get_user_password_by_email('dev@debug.com')
+
+    with batch2:
+        pass
+
     # then
+    mock_connect.assert_called_with(batch2_path)
 
-    assert result == 'fake_password1'
 
-
-@patch(f'{TESTED_MODULE}.sqlite3')
-def test_get_user_password_by_email__return_none_if_user_not_found(m_sqlite, monkeypatch):
+@patch(f'{TESTED_MODULE}.sqlite3.connect')
+def test_testdb_database_setup_connection_on_context_manager(mock_connect):
     # given
-    from certifia.data_engineering.database import Session
-    sess = Session()
-    m_sqlite.connect().execute().fetchall.return_value = []
+    testdb = TestDB()
+    testdb_path = 'fake_path'
+    testdb.test_path = 'fake_path'
 
     # when
-    result = sess.get_user_password_by_email('fake-email@debug.com')
-    # then
 
-    assert result is None
+    with testdb:
+        pass
+
+    # then
+    mock_connect.assert_called_with(testdb_path)
