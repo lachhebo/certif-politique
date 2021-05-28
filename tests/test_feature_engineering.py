@@ -134,7 +134,6 @@ class TestFeatureEngineering(TestCase):
         result_X, result_y = FeatureEngineering(training_columns, dummi_columns).fit(df)
 
         # then
-        print(result_X)
         assert_frame_equal(result_X, expected_X)
         assert_series_equal(result_y, expected_y)
 
