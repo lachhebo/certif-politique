@@ -29,7 +29,7 @@ class FeatureEngineering:
             return self.label_encoder.transform(X)
         return X
 
-    def transform(self, dataframe: pd.DataFrame):
+    def fit(self, dataframe: pd.DataFrame):
         df = dataframe.copy()
 
         df = self.cleaning(df)
@@ -40,7 +40,7 @@ class FeatureEngineering:
 
         return X, y
 
-    def prepare_for_predictions(self, dataframe: pd.DataFrame):
+    def transform(self, dataframe: pd.DataFrame):
         df = dataframe.copy()
         df = df[self.training_columns]
         return self.transform_dummify_columns(df)
