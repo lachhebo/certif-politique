@@ -131,9 +131,3 @@ dmypy.json
 
 data/*.db
 data/*.parquet
-
-# Intellij
-.idea/
-
-# MacOS file
-.DS_Store

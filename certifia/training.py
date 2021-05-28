@@ -25,7 +25,7 @@ class Training:
         print('Mean Absolute Error:', metrics.mean_absolute_error(y, y_pred))
         print('Mean Squared Error:', metrics.mean_squared_error(y, y_pred))
         print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y, y_pred)))
-        print('Mean Squared Error:', metrics.r2_score(y, y_pred))
+        print('R2 score:', metrics.r2_score(y, y_pred))
 
     def save_model(self, path=None):
         """

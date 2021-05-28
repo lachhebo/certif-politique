@@ -3,7 +3,7 @@ from sklearn import preprocessing
 
 class MultiColumnLabelEncoder:
     def __init__(self, columns=None):
-        self.columns = columns  # array of column names to encode
+        self.columns = columns  # array of column names to encode or string equal to 'all
         self.label_encoder = {}
 
     def fit(self, X, y=None):
@@ -13,8 +13,8 @@ class MultiColumnLabelEncoder:
         columns in X.
         """
         if type(self.columns) is list:
-            for col in self.columns:
-                self.label_encoder[col] = preprocessing.LabelEncoder().fit(X[col])
+            for colname in self.columns:
+                self.label_encoder[colname] = preprocessing.LabelEncoder().fit(X[colname])
         elif type(self.columns) is str and self.columns == 'all':
             for colname, col in X.iteritems():
                 self.label_encoder[colname] = preprocessing.LabelEncoder().fit(col)
@@ -30,8 +30,8 @@ class MultiColumnLabelEncoder:
         """
         output = X.copy()
         if type(self.columns) is list:
-            for col in self.columns:
-                output[col] = self.label_encoder[col].transform(output[col])
+            for colname in self.columns:
+                output[colname] = self.label_encoder[colname].transform(output[colname])
         elif type(self.columns) is str and self.columns == 'all':
             for colname, col in output.iteritems():
                 output[colname] = self.label_encoder[colname].transform(col)
