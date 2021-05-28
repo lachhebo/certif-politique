@@ -11,7 +11,8 @@ class FeatureEngineering:
     def cleaning(self, df):
         df = df.dropna(subset=["RETARD A L'ARRIVEE"])
         # NIVEAU DE SECURITE is always the same value
-        df = df.drop(columns=['NIVEAU DE SECURITE'])
+        if 'NIVEAU DE SECURITE' in df.columns:
+            df = df.drop(columns=['NIVEAU DE SECURITE'])
         return df
 
     def split_feature_label(self, df):

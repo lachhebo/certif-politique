@@ -9,7 +9,7 @@ from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
 TESTED_MODULE = 'certifia.utils.multi_column_label_encode'
 
 
-class TestStringMethods(TestCase):
+class TestMultiColumnLabelEncoder(TestCase):
     def test_instantiate_encoder_should_return_the_encoder(self):
         # given
         # when
