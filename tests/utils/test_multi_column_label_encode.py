@@ -81,7 +81,7 @@ class TestMultiColumnLabelEncoder(TestCase):
         df = pd.DataFrame(columns=columns, data=[['A', 'A'], ['B', 'B'], ['A', 'C']])
         expected_df = pd.DataFrame(columns=columns, data=[[0, 0], [1, 1], [0, 2]])
         # when
-        result = MultiColumnLabelEncoder('all').fit_transform(df)
+        result = MultiColumnLabelEncoder(all_columns=True).fit_transform(df)
         # then
         assert_frame_equal(result, expected_df)
 
