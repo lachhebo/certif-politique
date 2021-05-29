@@ -11,7 +11,7 @@ TESTED_MODULE = 'certifia.feature_engineering'
 
 
 class TestFeatureEngineering(TestCase):
-    def test_instantiate_feature_engineering_should_return_the_encoder(self):
+    def test_instantiate_feature_engineering_should_return_itself(self):
         # given
         # when
         result = FeatureEngineering()

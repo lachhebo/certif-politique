@@ -3,6 +3,8 @@ from sklearn import metrics
 import pickle
 import numpy as np
 
+from certifia.utils.logger import Logger
+
 
 class Training:
     def __init__(self):
@@ -22,10 +24,11 @@ class Training:
 
     def score(self, X, y):
         y_pred = self.predict(X)
-        print('Mean Absolute Error:', metrics.mean_absolute_error(y, y_pred))
-        print('Mean Squared Error:', metrics.mean_squared_error(y, y_pred))
-        print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y, y_pred)))
-        print('R2 score:', metrics.r2_score(y, y_pred))
+        logger = Logger().logger
+        logger.info(f'Mean Absolute Error: {metrics.mean_absolute_error(y, y_pred)}')
+        logger.info(f'Mean Squared Error: {metrics.mean_squared_error(y, y_pred)}')
+        logger.info(f'Root Mean Squared Error: {np.sqrt(metrics.mean_squared_error(y, y_pred))}')
+        logger.info(f'R2 score: {metrics.r2_score(y, y_pred)}')
 
     def save_model(self, path=None):
         """
