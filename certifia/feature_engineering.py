@@ -3,21 +3,45 @@ import pandas as pd
 
 
 class FeatureEngineering:
-    def __init__(self, training_columns=None, columns_to_dummify=None):
+    def __init__(self, training_columns=None, columns_to_dummify=None, label_name="RETARD A L'ARRIVEE"):
         self.training_columns = training_columns
         self.columns_to_dummify = columns_to_dummify
         self.label_encoder = MultiColumnLabelEncoder(columns=self.columns_to_dummify)
+        self.label_name = label_name
 
     def cleaning(self, df):
-        df = df.dropna(subset=["RETARD A L'ARRIVEE"])
-        # NIVEAU DE SECURITE is always the same value
+        cleaning_columns = list(set(df.columns.intersection(self.training_columns)))
+        df = df.dropna(subset=cleaning_columns)
         if 'NIVEAU DE SECURITE' in df.columns:
             df = df.drop(columns=['NIVEAU DE SECURITE'])
         return df
 
-    def split_feature_label(self, df):
+    def get_month(self, df):
+        return df.apply(lambda x: x.month)
+
+    def get_week(self, df):
+        return df.apply(lambda x: x.week)
+
+    def get_start_hour(self, df):
+        pass
+
+    def __get_dict_of_average_plane_by_day(self, df, airport_type: str):
+        min_date = df['DATE'].min()
+        max_date = df['DATE'].max()
+        number_of_days = (max_date - min_date).days + 1
+        return df[
+            [airport_type, 'IDENTIFIANT', 'DATE']].groupby([airport_type, 'DATE']).count().reset_index()[
+            [airport_type, 'IDENTIFIANT']].groupby([airport_type]).sum().apply(
+            lambda x: x/number_of_days
+        )['IDENTIFIANT'].to_dict()
+
+    def get_average_plane_take_off_or_landing_by_day(self, df, airport_type):
+        average_nb_plane_by_day = self.__get_dict_of_average_plane_by_day(df, airport_type)
+        return df[airport_type].apply(lambda x: average_nb_plane_by_day[x])
+
+    def split_X_y(self, df):
         X = df[self.training_columns]
-        y = df["RETARD A L'ARRIVEE"]
+        y = df[self.label_name]
         return X, y
 
     def fit_transform_dummify_columns(self, X):
@@ -35,13 +59,28 @@ class FeatureEngineering:
 
         df = self.cleaning(df)
 
-        X, y = self.split_feature_label(df)
+        df.loc[:, 'DATE'] = pd.to_datetime(df['DATE'])
+        df.loc[:, 'MOIS'] = self.get_month(df['DATE'])
+        df.loc[:, 'SEMAINE'] = self.get_week(df['DATE'])
+
+        X, y = self.split_X_y(df)
+
+        # TODO implement also this for transform
+        # X.loc[:, 'NOMBRE DECOLLAGE PAR AEROPORT PAR JOUR'] = self.get_average_plane_take_off_or_landing_by_day(
+        #     X, 'AEROPORT DEPART'
+        # )
+        # X.loc[:, 'NOMBRE ATTERRISSAGE PAR AEROPORT PAR JOUR'] = self.get_average_plane_take_off_or_landing_by_day(
+        #     X, 'AEROPORT ARRIVEE'
+        # )
 
         X = self.fit_transform_dummify_columns(X)
 
         return X, y
 
-    def transform(self, dataframe: pd.DataFrame):
-        df = dataframe.copy()
+    def transform(self, df: pd.DataFrame):
+        df.loc[:, 'DATE'] = pd.to_datetime(df['DATE'])
+        df.loc[:, 'MOIS'] = self.get_month(df['DATE'])
+        df.loc[:, 'SEMAINE'] = self.get_week(df['DATE'])
+
         df = df[self.training_columns]
         return self.transform_dummify_columns(df)

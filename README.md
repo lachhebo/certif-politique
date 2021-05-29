@@ -29,3 +29,8 @@ OK
     -   charger un fichier et afficher ses prédictions
 
 8) Améliorer le modèle
+
+
+Remarque sur les données :
+le NIVEAU DE SECURITE a toujours sa valeur à 10 et n'est donc pas une variable intéressante
+
