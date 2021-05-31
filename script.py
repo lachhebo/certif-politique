@@ -11,7 +11,7 @@ def main():
     datasets = read_db()
     logger.info("Db read.")
 
-    vols_df = pd.concat([datasets['batch1']['vols'], datasets['batch2']['vols']])
+    vols_df = pd.concat([datasets['batch1']['vols'], datasets['batch2']['vols']]).head(500000)
 
     logger.info("Feature engineering...")
     feature_engineering = FeatureEngineering(
@@ -30,6 +30,8 @@ def main():
     model = Training().fit(X, y)
     logger.info("Model trained.")
     # TODO: add date in model
+    feature_engineering.save_feature_engineering(path="data/output/feature_engineering.pkl")
+    logger.info("Feature Engineering saved.")
     model.save_model(path="models/rf_model.pkl")
     logger.info("Model saved.")
 

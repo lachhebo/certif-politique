@@ -1,5 +1,7 @@
-from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
+import pickle
 import pandas as pd
+
+from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
 
 
 class FeatureEngineering:
@@ -76,6 +78,8 @@ class FeatureEngineering:
 
         X = self.fit_transform_dummify_columns(X)
 
+        # X = X.drop(columns=['DATE', 'IDENTIFIANT'])
+
         return X, y
 
     def transform(self, df: pd.DataFrame):
@@ -84,4 +88,29 @@ class FeatureEngineering:
         df.loc[:, 'SEMAINE'] = self.get_week(df['DATE'])
 
         df = df[self.training_columns]
-        return self.transform_dummify_columns(df)
+        X = self.transform_dummify_columns(df)
+        # X = X.drop(columns=['DATE', 'IDENTIFIANT'])
+        return X
+
+    def save_feature_engineering(self, path=None):
+        """
+        Save to file in the current working directory
+        """
+        if path is None:
+            path = "../data/output/feature_engineering.pkl"
+        with open(path, 'wb') as file:
+            pickle.dump(self, file)
+
+    def load_feature_engineering(self, path=None):
+        """
+        Load file in an instance
+        """
+        if path is None:
+            path = "../data/output/feature_engineering.pkl"
+        with open(path, 'rb') as file:
+            pickle_fe = pickle.load(file)
+            self.training_columns = pickle_fe.training_columns
+            self.columns_to_dummify = pickle_fe.columns_to_dummify
+            self.label_encoder = pickle_fe.label_encoder
+            self.label_name = pickle_fe.label_name
+        return self

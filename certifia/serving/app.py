@@ -1,7 +1,8 @@
-from random import randrange, seed
-
 from flask import Flask, render_template, request
 import pandas as pd
+
+from certifia.feature_engineering import FeatureEngineering
+from certifia.training import Training
 
 app = Flask(__name__)
 
@@ -34,17 +35,16 @@ def load_csv(file):
 
 def prediction(df, form):
     df_prediction = df[['IDENTIFIANT']].copy()
-    # Load feature Engineering
-    # feature_engineering = FeatureEngineering()
-    # df_engineered = feature_engineering.transform(df)
-    # load training
-    # training = Training()
-    # y_pred = training.predict(df_engineered)
 
-    # df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] =  pd.Series(data=y_pred, name="PREDICTION")
-
-    # temporairement
-    seed(42)
+    # temp
     if bool(form.get('retard_arrivee')):
-        df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] = df['IDENTIFIANT'].apply(lambda x: randrange(10))
+        # Load feature Engineering
+        feature_engineering = FeatureEngineering().load_feature_engineering(path="data/output/feature_engineering.pkl")
+        df_engineered = feature_engineering.transform(df)
+        df_engineered = df_engineered.drop(columns=['DATE', 'IDENTIFIANT'])
+        # load training
+        training = Training().load_model(path="models/rf_model.pkl")
+        y_pred = training.predict(df_engineered)
+        # df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] = df['IDENTIFIANT'].apply(lambda x: randrange(10))
+        df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] = pd.Series(data=y_pred, name="PREDICTION")
     return df_prediction
