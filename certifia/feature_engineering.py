@@ -11,6 +11,7 @@ class FeatureEngineering:
 
     def cleaning(self, df):
         cleaning_columns = list(set(df.columns.intersection(self.training_columns)))
+        cleaning_columns.append(self.label_name)
         df = df.dropna(subset=cleaning_columns)
         if 'NIVEAU DE SECURITE' in df.columns:
             df = df.drop(columns=['NIVEAU DE SECURITE'])
