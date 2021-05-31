@@ -8,7 +8,7 @@ from certifia.utils.logger import Logger
 
 class Training:
     def __init__(self):
-        self.rf_regressor = RandomForestRegressor(n_estimators=30, max_depth=4, random_state=0, n_jobs=-1)
+        self.rf_regressor = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=0, n_jobs=-1)
 
     def fit(self, X, y):
         """
@@ -38,3 +38,14 @@ class Training:
             path = "../models/rf_model.pkl"
         with open(path, 'wb') as file:
             pickle.dump(self.rf_regressor, file)
+
+    def load_model(self, path=None):
+        """
+        Load to file in the current working directory
+        """
+        if path is None:
+            path = "../models/rf_model.pkl"
+        with open(path, 'rb') as file:
+            pickle_model = pickle.load(file)
+            self.rf_regressor = pickle_model
+        return self
