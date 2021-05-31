@@ -24,7 +24,7 @@ class FeatureEngineering:
         return df.apply(lambda x: x.week)
 
     def get_start_hour(self, df):
-        pass
+        return df.apply(lambda x: x[:-2])
 
     def __get_dict_of_average_plane_by_day(self, df, airport_type: str):
         min_date = df['DATE'].min()
