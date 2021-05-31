@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 @app.route("/prediction")
 def predict():
-    # TODO: run application
     return "<p>Hello, World!</p>"
 
 
@@ -51,5 +50,4 @@ def prediction(df, form):
 
 
 if __name__ == "__main__":
-    # Only for debugging while developing
     app.run(host='0.0.0.0', debug=os.getenv('DEBUG', 'False') == 'True', port=80)

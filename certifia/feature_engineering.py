@@ -1,7 +1,7 @@
+from typing import Tuple
+from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
 import pickle
 import pandas as pd
-
-from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
 
 
 class FeatureEngineering:
@@ -19,40 +19,40 @@ class FeatureEngineering:
             df = df.drop(columns=['NIVEAU DE SECURITE'])
         return df
 
-    def get_month(self, df):
+    def get_month(self, df: pd.DataFrame) -> pd.DataFrame:
         return df.apply(lambda x: x.month)
 
-    def get_week(self, df):
+    def get_week(self, df: pd.DataFrame) -> pd.DataFrame:
         return df.apply(lambda x: x.week)
 
     def get_start_hour(self, df):
         return df.apply(lambda x: x[:-2])
 
-    def __get_dict_of_average_plane_by_day(self, df, airport_type: str):
+    def __get_dict_of_average_plane_by_day(self, df: pd.DataFrame, airport_type: str):
         min_date = df['DATE'].min()
         max_date = df['DATE'].max()
         number_of_days = (max_date - min_date).days + 1
         return df[
             [airport_type, 'IDENTIFIANT', 'DATE']].groupby([airport_type, 'DATE']).count().reset_index()[
             [airport_type, 'IDENTIFIANT']].groupby([airport_type]).sum().apply(
-            lambda x: x/number_of_days
+            lambda x: x / number_of_days
         )['IDENTIFIANT'].to_dict()
 
-    def get_average_plane_take_off_or_landing_by_day(self, df, airport_type):
+    def get_average_plane_take_off_or_landing_by_day(self, df: pd.DataFrame, airport_type) -> pd.DataFrame:
         average_nb_plane_by_day = self.__get_dict_of_average_plane_by_day(df, airport_type)
         return df[airport_type].apply(lambda x: average_nb_plane_by_day[x])
 
-    def split_X_y(self, df):
+    def split_X_y(self, df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         X = df[self.training_columns]
         y = df[self.label_name]
         return X, y
 
-    def fit_transform_dummify_columns(self, X):
+    def fit_transform_dummify_columns(self, X: pd.DataFrame) -> pd.DataFrame:
         if self.columns_to_dummify is not None:
             return self.label_encoder.fit_transform(X)
         return X
 
-    def transform_dummify_columns(self, X):
+    def transform_dummify_columns(self, X: pd.DataFrame) -> pd.DataFrame:
         if self.columns_to_dummify is not None:
             return self.label_encoder.transform(X)
         return X
@@ -82,7 +82,7 @@ class FeatureEngineering:
 
         return X, y
 
-    def transform(self, df: pd.DataFrame):
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         df.loc[:, 'DATE'] = pd.to_datetime(df['DATE'])
         df.loc[:, 'MOIS'] = self.get_month(df['DATE'])
         df.loc[:, 'SEMAINE'] = self.get_week(df['DATE'])
