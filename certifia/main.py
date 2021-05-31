@@ -26,5 +26,10 @@ def data():
         return render_template('data.html', form=form_data)
 
 
-def dummy_prediction():
+def dummy_prediction(request):
     return {'retard': 4}
+
+
+if __name__ == "__main__":
+    # Only for debugging while developing
+    app.run(host='0.0.0.0', debug=True, port=80)
