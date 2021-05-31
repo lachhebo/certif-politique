@@ -36,7 +36,6 @@ def load_csv(file):
 def prediction(df, form):
     df_prediction = df[['IDENTIFIANT']].copy()
 
-    # temp
     if bool(form.get('retard_arrivee')):
         # Load feature Engineering
         feature_engineering = FeatureEngineering().load_feature_engineering(path="data/output/feature_engineering.pkl")
