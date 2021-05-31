@@ -13,5 +13,4 @@ test:
 	poetry run pytest tests --cov=certifia  --cov-fail-under=80
 
 run: 
-	export FLASK_APP=certifia/main.py
-	flask run 
+	flask run

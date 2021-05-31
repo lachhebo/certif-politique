@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "certifia"
-version = "0.2.0"
+version = "0.3.0"
 description = "our package for certification"
 authors = ["Ismaïl Lachheb <ismael.lachheb@protonmail.com>", "Fabien Roussel <fabien.roussel921@gmail.com>"]
 license = "Close Source"
