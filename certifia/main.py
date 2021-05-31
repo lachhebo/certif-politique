@@ -47,3 +47,8 @@ def prediction(df, form):
         # df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] = df['IDENTIFIANT'].apply(lambda x: randrange(10))
         df_prediction.loc[:, "PREDICTION RETARD A L'ARRIVEE"] = pd.Series(data=y_pred, name="PREDICTION")
     return df_prediction
+
+
+if __name__ == "__main__":
+    # Only for debugging while developing
+    app.run(host='0.0.0.0', debug=True, port=80)
