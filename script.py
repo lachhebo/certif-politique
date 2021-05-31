@@ -17,10 +17,14 @@ def main():
     feature_engineering = FeatureEngineering(
         training_columns=['AEROPORT DEPART',
                           'AEROPORT ARRIVEE',
-                          'NOMBRE DE PASSAGERS'],
+                          'DATE',
+                          'MOIS',
+                          'SEMAINE',
+                          'IDENTIFIANT'],
         columns_to_dummify=['AEROPORT DEPART', 'AEROPORT ARRIVEE']
     )
     X, y = feature_engineering.fit(vols_df)
+    X = X.drop(columns=['DATE', 'IDENTIFIANT'])
 
     logger.info("Training...")
     model = Training().fit(X, y)
