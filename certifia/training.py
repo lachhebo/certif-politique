@@ -2,6 +2,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn import metrics
 import pickle
 import numpy as np
+import pandas as pd
 
 from certifia.utils.logger import Logger
 
@@ -19,7 +20,7 @@ class Training:
         self.rf_regressor.fit(X, y)
         return self
 
-    def predict(self, X):
+    def predict(self, X: pd.Series):
         return self.rf_regressor.predict(X)
 
     def score(self, X, y):
