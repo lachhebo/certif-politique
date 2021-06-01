@@ -92,6 +92,7 @@ class FeatureEngineering:
         # X = X.drop(columns=['DATE', 'IDENTIFIANT'])
         return X
 
+    # TODO: add test
     def save_feature_engineering(self, path=None):
         """
         Save to file in the current working directory
@@ -101,6 +102,7 @@ class FeatureEngineering:
         with open(path, 'wb') as file:
             pickle.dump(self, file)
 
+    # TODO: add test
     def load_feature_engineering(self, path=None):
         """
         Load file in an instance

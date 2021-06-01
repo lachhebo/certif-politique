@@ -1,8 +1,7 @@
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from unittest import TestCase
 
 import pandas as pd
-from pandas._testing import assert_frame_equal, assert_series_equal
 from sklearn.ensemble import RandomForestRegressor
 
 from certifia.training import Training
@@ -27,7 +26,7 @@ class TestTraining(TestCase):
         y = pd.Series(name="RETARD A L'ARRIVEE", dtype=int)
 
         # when
-        result = Training().fit(X, y)
+        Training().fit(X, y)
 
         # then
         self.assertEqual(mock_rf_fit.call_count, 1)
@@ -60,4 +59,24 @@ class TestTraining(TestCase):
         # then
         self.assertEqual(mock_logger.call_count, 4)
 
-        # TODO add test for saving the model
+    @patch('pickle.dump')
+    def test_save_feature_engineering(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            Training().save_model()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)
+
+    @patch('pickle.load')
+    def test_load_feature_engineering(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            Training().load_model()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)
