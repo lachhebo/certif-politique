@@ -31,6 +31,7 @@ class Training:
         logger.info(f'Root Mean Squared Error: {np.sqrt(metrics.mean_squared_error(y, y_pred))}')
         logger.info(f'R2 score: {metrics.r2_score(y, y_pred)}')
 
+    # TODO: add test
     def save_model(self, path=None):
         """
         Save to file in the current working directory
@@ -40,6 +41,7 @@ class Training:
         with open(path, 'wb') as file:
             pickle.dump(self.rf_regressor, file)
 
+    # TODO: add test
     def load_model(self, path=None):
         """
         Load to file in the current working directory

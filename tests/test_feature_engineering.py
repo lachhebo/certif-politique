@@ -1,5 +1,5 @@
 from datetime import date
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from unittest import TestCase
 
 import pandas as pd
@@ -155,6 +155,28 @@ class TestFeatureEngineering(TestCase):
 
         # then
         assert_series_equal(result, expected_df)
+
+    @patch('pickle.dump')
+    def test_save_feature_engineering(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            FeatureEngineering().save_feature_engineering()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)
+
+    @patch('pickle.load')
+    def test_load_feature_engineering(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            FeatureEngineering().load_feature_engineering()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)
 
     # test d'intégration
     def test_fit_return_features_and_labels_dataframe(self):
