@@ -20,23 +20,8 @@ class TestFeatureEngineering(TestCase):
         # then
         self.assertEqual(result.training_columns, None)
         self.assertEqual(result.columns_to_dummify, None)
+        self.assertEqual(result.average_nb_plane_by_day, {})
         self.assertIsInstance(result.label_encoder, MultiColumnLabelEncoder)
-
-    def test_split_feature_label_shoud_return_a_df_of_feature_and_a_df_of_labels(self):
-        # given
-        training_columns = ["Col_Train_1", "Col_Train_2"]
-        columns = ["Col_Train_1", "Col_Train_2", "RETARD"]
-        df = pd.DataFrame(columns=columns, data=[['A', 'A', 'A'], ['B', 'B', 'B'], ['A', 'B', 'C']])
-
-        expected_df_X = pd.DataFrame(columns=training_columns, data=[['A', 'A'], ['B', 'B'], ['A', 'B']])
-        expected_df_y = pd.Series(name="RETARD", data=['A', 'B', 'C'])
-
-        # when
-        result_X, result_y = FeatureEngineering(training_columns, label_name="RETARD").split_X_y(df)
-
-        # then
-        assert_frame_equal(expected_df_X, result_X)
-        assert_series_equal(expected_df_y, result_y)
 
     @patch(f'{TESTED_MODULE}.MultiColumnLabelEncoder.transform')
     def test_fit_transform_dummify_columns_should_return_a_dummified_df(self, mock_fit_transform):
@@ -89,49 +74,72 @@ class TestFeatureEngineering(TestCase):
         assert_frame_equal(result, df)
 
     @patch('pandas.to_datetime')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_month')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_week')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_hour')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_average_plane_take_off_or_landing_by_day')
     @patch(f'{TESTED_MODULE}.FeatureEngineering.fit_transform_dummify_columns')
-    @patch(f'{TESTED_MODULE}.FeatureEngineering.split_X_y')
-    @patch(f'{TESTED_MODULE}.FeatureEngineering.cleaning')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.keep_training_columns')
     def test_fit_call_multiple_feature_engineering_method(
             self,
-            mock_cleaning,
-            mock_split_x_y,
-            mock_fit_transform_dummify,
-            mock_to_datetime
+            mock_keep_training_columns,
+            mock_fit_transform_dummify_columns,
+            mock_get_average_plane_take_off_or_landing_by_day,
+            mock_get_hour,
+            mock_get_week,
+            mock_get_month,
+            mock_to_datetime,
     ):
         # given
-        training_columns = ["Col_Train_1", "Dum", "DATE"]
+        training_columns = ["DATE", "DEPART PROGRAMME", "ARRIVEE PROGRAMMEE"]
         df = pd.DataFrame(columns=training_columns)
-        mock_split_x_y.return_value = pd.DataFrame, pd.DataFrame
+        mock_fit_transform_dummify_columns.return_value = pd.DataFrame, pd.DataFrame
 
         # when
         FeatureEngineering(training_columns).fit(df)
 
         # then
-        self.assertEqual(mock_cleaning.call_count, 1)
-        self.assertEqual(mock_split_x_y.call_count, 1)
-        self.assertEqual(mock_fit_transform_dummify.call_count, 1)
         self.assertEqual(mock_to_datetime.call_count, 1)
+        self.assertEqual(mock_get_month.call_count, 1)
+        self.assertEqual(mock_get_week.call_count, 1)
+        self.assertEqual(mock_get_hour.call_count, 2)
+        self.assertEqual(mock_get_average_plane_take_off_or_landing_by_day.call_count, 2)
+        self.assertEqual(mock_fit_transform_dummify_columns.call_count, 1)
+        self.assertEqual(mock_keep_training_columns.call_count, 1)
 
     @patch('pandas.to_datetime')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_month')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_week')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.get_hour')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.apply_average_plane_take_off_or_landing_by_day')
     @patch(f'{TESTED_MODULE}.FeatureEngineering.transform_dummify_columns')
+    @patch(f'{TESTED_MODULE}.FeatureEngineering.keep_training_columns')
     def test_transform_should_return_dataframe_with_a_call_of_self_transform_dummify(
             self,
-            mock_transform_dummi,
-            mock_to_datetime
+            mock_keep_training_columns,
+            mock_transform_dummify_columns,
+            mock_apply_average_plane_take_off_or_landing_by_day,
+            mock_get_hour,
+            mock_get_week,
+            mock_get_month,
+            mock_to_datetime,
     ):
         # given
-        training_columns = ["Col_Train_1", "Dum", "DATE", "MOIS", "SEMAINE"]
-        df = pd.DataFrame(columns=["Col_Train_1", "Dum", "DATE"])
-        mock_transform_dummi.return_value = df
+        training_columns = ["DATE", "DEPART PROGRAMME", "ARRIVEE PROGRAMMEE"]
+        df = pd.DataFrame(columns=training_columns)
+        mock_transform_dummify_columns.return_value = pd.DataFrame, pd.DataFrame
 
         # when
-        result = FeatureEngineering(training_columns).transform(df)
+        FeatureEngineering(training_columns).transform(df)
 
         # then
-        self.assertEqual(mock_transform_dummi.call_count, 1)
         self.assertEqual(mock_to_datetime.call_count, 1)
-        self.assertListEqual(result.columns.tolist(), training_columns)
+        self.assertEqual(mock_get_month.call_count, 1)
+        self.assertEqual(mock_get_week.call_count, 1)
+        self.assertEqual(mock_get_hour.call_count, 2)
+        self.assertEqual(mock_apply_average_plane_take_off_or_landing_by_day.call_count, 2)
+        self.assertEqual(mock_transform_dummify_columns.call_count, 1)
+        self.assertEqual(mock_keep_training_columns.call_count, 1)
 
     def test_average_plane_by_return_series_of_number_of_takeoff(self):
         training_columns = ['AEROPORT', "IDENTIFIANT", "DATE"]
@@ -181,66 +189,117 @@ class TestFeatureEngineering(TestCase):
     # test d'intégration
     def test_fit_return_features_and_labels_dataframe(self):
         # given
-        training_columns = ["Col_Train_1", "Dum", "DATE"]
-        dummi_columns = ["Dum"]
+        df_columns = [
+            'IDENTIFIANT',
+            'DEPART PROGRAMME',
+            'ARRIVEE PROGRAMMEE',
+            'AEROPORT DEPART',
+            'AEROPORT ARRIVEE',
+            'DATE',
+        ]
+        training_columns = [
+            'AEROPORT DEPART',
+            'MOIS',
+            'SEMAINE',
+            'HEURE DEPART PROGRAMME',
+            'HEURE ARRIVEE PROGRAMMEE',
+            'NOMBRE DECOLLAGE PAR AEROPORT PAR JOUR',
+            'NOMBRE ATTERRISSAGE PAR AEROPORT PAR JOUR',
+        ]
+        dummi_columns = ['AEROPORT DEPART', 'AEROPORT ARRIVEE']
         df = pd.DataFrame(
-            columns=["Col_Train_1", "Dum", "DATE", "RETARD A L'ARRIVEE"],
-            data=[['A', 'A', '01-01-2020', 1], ['B', 'B', '02-01-2020', 2], ['A', 'B', '03-01-2020', 3]]
+            columns=df_columns,
+            data=[
+                [1, 1100, 1200, 'C', 'A', '12-29-2019'],
+                [2, 1130, 1330, 'B', 'A', '12-30-2019'],
+                [3, 2059, 2100, 'B', 'C', '12-30-2019']]
         )
-        expected_X = pd.DataFrame(columns=["Col_Train_1", "Dum", "DATE"], data=[
-            ['A', 0, date(2020, 1, 1)],
-            ['B', 1, date(2020, 2, 1)],
-            ['A', 1, date(2020, 3, 1)]])
-        expected_y = pd.Series(name="RETARD A L'ARRIVEE", data=[1, 2, 3])
+        expected_X = pd.DataFrame(columns=training_columns, data=[
+            [1, 12, 52, 11, 12, 0.5, 1],
+            [0, 12,  1, 11, 13, 1,   1],
+            [0, 12,  1, 20, 21, 1, 0.5]])
 
         # when
-        result_X, result_y = FeatureEngineering(training_columns, dummi_columns).fit(df)
+        result_X = FeatureEngineering(training_columns, dummi_columns).fit(df)
 
         # then
         assert_frame_equal(result_X, expected_X, check_dtype=False)
-        assert_series_equal(result_y, expected_y)
 
     def test_transform_return_features_dataframe(self):
         # given
-        training_columns = ["Col_Train_1", "Dum", "DATE", "MOIS", "SEMAINE"]
+        df_columns = [
+            'IDENTIFIANT',
+            'DEPART PROGRAMME',
+            'ARRIVEE PROGRAMMEE',
+            'AEROPORT DEPART',
+            'AEROPORT ARRIVEE',
+            'DATE',
+        ]
+        training_columns = [
+            'MOIS',
+            'SEMAINE',
+            'HEURE DEPART PROGRAMME',
+            'HEURE ARRIVEE PROGRAMMEE',
+            'NOMBRE DECOLLAGE PAR AEROPORT PAR JOUR',
+            'NOMBRE ATTERRISSAGE PAR AEROPORT PAR JOUR',
+        ]
         df = pd.DataFrame(
-            columns=["Col_Train_1", "Dum", "DATE"],
-            data=[['A', 'A', '01-01-2020'],
-                  ['B', 'B', '01-02-2020'],
-                  ['A', 'B', '01-03-2020']])
-        expected_df = pd.DataFrame(
-            columns=training_columns,
+            columns=df_columns,
             data=[
-                ['A', 'A', date(2020, 1, 1), 1, 1],
-                ['B', 'B', date(2020, 1, 2), 1, 1],
-                ['A', 'B', date(2020, 1, 3), 1, 1]])
+                [1, 1100, 1200, 'C', 'A', '12-29-2019'],
+                [2, 1130, 1330, 'B', 'A', '12-30-2019'],
+                [3, 2059, 2100, 'B', 'C', '12-30-2019']]
+        )
+        expected_df = pd.DataFrame(columns=training_columns, data=[
+            [12, 52, 11, 12, 0, 0],
+            [12,  1, 11, 13, 0, 0],
+            [12,  1, 20, 21, 0, 0]])
+
+        feature_engineering = FeatureEngineering(training_columns)
+        feature_engineering.average_nb_plane_by_day = {'AEROPORT DEPART': {}, 'AEROPORT ARRIVEE': {}}
 
         # when
-        result = FeatureEngineering(training_columns).transform(df)
+        result = feature_engineering.transform(df)
 
         # then
         assert_frame_equal(result, expected_df, check_dtype=False)
 
     def test_fit_transform_return_features_dataframe(self):
         # given
-        columns_to_dummify = ["Dum"]
+        columns = [
+            'IDENTIFIANT',
+            'DEPART PROGRAMME',
+            'ARRIVEE PROGRAMMEE',
+            'AEROPORT DEPART',
+            'AEROPORT ARRIVEE',
+            'DATE',
+        ]
+        training_columns = [
+            'MOIS',
+            'SEMAINE',
+            'HEURE DEPART PROGRAMME',
+            'HEURE ARRIVEE PROGRAMMEE',
+            'NOMBRE DECOLLAGE PAR AEROPORT PAR JOUR',
+            'NOMBRE ATTERRISSAGE PAR AEROPORT PAR JOUR',
+        ]
         train_df = pd.DataFrame(
-            columns=["Col_Train_1", "Dum", "DATE", "RETARD A L'ARRIVEE"],
-            data=[['A', 'A', '01-01-2020', 1],
-                  ['B', 'B', '01-02-2020', 2],
-                  ['C', 'C', '01-03-2020', 3]])
-        training_columns = ["Col_Train_1", "Dum", "DATE"]
+            columns=columns,
+            data=[
+                [1, 1100, 1200, 'C', 'A', '12-29-2019'],
+                [2, 1130, 1330, 'B', 'A', '12-30-2019'],
+                [3, 2059, 2100, 'B', 'C', '12-30-2019']]
+        )
         test_df = pd.DataFrame(
-            columns=training_columns,
-            data=[['C', 'A', '01-01-2020'],
-                  ['A', 'B', '01-01-2020'],
-                  ['B', 'C', '01-01-2020']])
-        expected_df = pd.DataFrame(
-            columns=training_columns,
-            data=[['C', 0, date(2020, 1, 1)],
-                  ['A', 1, date(2020, 1, 1)],
-                  ['B', 2, date(2020, 1, 1)]])
-        feature_engineering = FeatureEngineering(training_columns, columns_to_dummify)
+            columns=columns,
+            data=[
+                [1,  35,  130, 'A', 'C', '01-01-2020'],
+                [2, 800, 2359, 'C', 'A', '01-01-2020']]
+        )
+        expected_df = pd.DataFrame(columns=training_columns, data=[
+            [1, 1, 0,  1, 0, 0.5],
+            [1, 1, 8, 23, 0.5, 1]])
+
+        feature_engineering = FeatureEngineering(training_columns)
 
         # when
         feature_engineering.fit(train_df)

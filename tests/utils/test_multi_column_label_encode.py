@@ -54,8 +54,8 @@ class TestMultiColumnLabelEncoder(TestCase):
         # given
         mock_label_encod.return_value = [0, 1, 2]
         columns = ["Col1", "Col2"]
-        df = pd.DataFrame(columns=columns, data=[['A', 'A'], ['B', 'B'], ['A', 'C']])
-        expected_df = pd.DataFrame(columns=columns, data=[[0, 0], [1, 1], [2, 2]])
+        df = pd.DataFrame(columns=columns, data=[['C', 'A'], ['B', 'B'], ['A', 'C']])
+        expected_df = pd.DataFrame(columns=columns, data=[[2, 0], [1, 1], [0, 2]])
         # when
         result = MultiColumnLabelEncoder(columns).fit(df).transform(df)
         # then
@@ -64,7 +64,7 @@ class TestMultiColumnLabelEncoder(TestCase):
     @patch('sklearn.preprocessing.LabelEncoder.transform')
     def test_encoder_transform_should_return_the_dataframe_with_encoded_columns_for_column_list(self, mock_label_encod):
         # given
-        mock_label_encod.return_value = [1, 0, 1]
+        mock_label_encod.return_value = [0, 1]
         columns = ["Col1", "Col2", "Col3"]
         dummy_columns = ["Col1", "Col2"]
         df = pd.DataFrame(columns=columns, data=[['B', 'B', 'Alpha'], ['A', 'A', 'Beta'], ['B', 'B', 'Gamma']])
