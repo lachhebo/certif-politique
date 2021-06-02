@@ -35,10 +35,20 @@ class MultiColumnLabelEncoder:
         output = X.copy()
         if self.columns is not None:
             for colname in self.columns:
-                output[colname] = self.label_encoder[colname].transform(output[colname])
+                le_dict = dict(zip(
+                    self.label_encoder[colname].classes_, self.label_encoder[colname].transform(
+                        self.label_encoder[colname].classes_
+                    )
+                ))
+                output[colname] = output[colname].apply(lambda x: le_dict.get(x, -1))
         elif self.all_columns is True:
             for colname, col in output.iteritems():
-                output[colname] = self.label_encoder[colname].transform(col)
+                le_dict = dict(zip(
+                    self.label_encoder[colname].classes_, self.label_encoder[colname].transform(
+                        self.label_encoder[colname].classes_
+                    )
+                ))
+                output[colname] = col.apply(lambda x: le_dict.get(x, -1))
         return output
 
     def fit_transform(self, X):

@@ -131,3 +131,5 @@ dmypy.json
 
 data/*.db
 data/*.parquet
+data/*.pkl
+data/*.csv
