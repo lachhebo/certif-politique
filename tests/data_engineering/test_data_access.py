@@ -1,9 +1,9 @@
 from unittest import TestCase
 from unittest.mock import Mock, call, patch
 
-from certifia.data_engineering.data_access import read_db
+from app.data_engineering.data_access import read_db
 
-TESTED_MODULE = 'certifia.data_engineering.data_access'
+TESTED_MODULE = 'app.data_engineering.data_access'
 
 
 class TestDataAccess(TestCase):

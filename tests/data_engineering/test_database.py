@@ -1,9 +1,9 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from certifia.data_engineering.database import Batch1DB, Batch2DB, TestDB
+from app.data_engineering.database import Batch1DB, Batch2DB, TestDB
 
-TESTED_MODULE = 'certifia.data_engineering.database'
+TESTED_MODULE = 'app.data_engineering.database'
 
 
 class TestDatabase(TestCase):
