@@ -104,7 +104,7 @@ class FeatureEngineering:
         Save to file in the current working directory
         """
         if path is None:
-            path = "../data/output/feature_engineering.pkl"
+            path = "../../data/output/feature_engineering.pkl"
         with open(path, 'wb') as file:
             pickle.dump(self, file)
 
@@ -115,11 +115,8 @@ class FeatureEngineering:
         """
         print(path)
         if path is None:
-            path = "../data/output/feature_engineering.pkl"
+            path = "../../data/output/feature_engineering.pkl"
         with open(path, 'rb') as file:
             pickle_fe = pickle.load(file)
-            self.training_columns = pickle_fe.training_columns
-            self.columns_to_dummify = pickle_fe.columns_to_dummify
-            self.label_encoder = pickle_fe.label_encoder
-            self.average_nb_plane_by_day = pickle_fe.average_nb_plane_by_day
-        return self
+
+        return pickle_fe

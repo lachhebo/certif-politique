@@ -15,7 +15,7 @@ def main():
     datasets = read_db()
     logger.info("Db read.")
 
-    vols_df = pd.concat([datasets['batch1']['vols'], datasets['batch2']['vols']]).head(1000000)
+    vols_df = pd.concat([datasets['batch1']['vols'], datasets['batch2']['vols']]).head(10000)
 
     FEATURES = datasets['test']['vols'].columns.tolist()
     label = "RETARD A L'ARRIVEE"
