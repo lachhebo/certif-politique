@@ -58,11 +58,12 @@ def prediction(df, form):
         cleaned_df = cleaning.cleaning(df)
 
         # Load feature Engineering
-        feature_engineering = FeatureEngineering().load_feature_engineering(path="data/output/feature_engineering.pkl")
+        feature_engineering = FeatureEngineering().load_feature_engineering(
+            path=f"{ROOT_PATH}/data/output/feature_engineering.pkl")
         df_engineered = feature_engineering.transform(cleaned_df)
 
         # load training
-        training = Model().load_model(path="models/rf_model.pkl")
+        training = Model().load_model(path=f"{ROOT_PATH}/models/rf_model.pkl")
         y_pred = training.predict(df_engineered)
 
         df_prediction.loc[df_engineered.index, "PREDICTION RETARD A L'ARRIVEE"] = pd.Series(
