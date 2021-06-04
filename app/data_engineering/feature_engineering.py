@@ -113,6 +113,7 @@ class FeatureEngineering:
         """
         Load file in an instance
         """
+        print(path)
         if path is None:
             path = "../data/output/feature_engineering.pkl"
         with open(path, 'rb') as file:
