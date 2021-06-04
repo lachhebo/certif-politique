@@ -4,9 +4,9 @@ import pandas as pd
 from pandas._testing import assert_frame_equal
 from sklearn.preprocessing import LabelEncoder
 
-from certifia.utils.multi_column_label_encode import MultiColumnLabelEncoder
+from app.utils.multi_column_label_encode import MultiColumnLabelEncoder
 
-TESTED_MODULE = 'certifia.utils.multi_column_label_encode'
+TESTED_MODULE = 'app.utils.multi_column_label_encode'
 
 
 class TestMultiColumnLabelEncoder(TestCase):

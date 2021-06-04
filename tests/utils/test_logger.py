@@ -4,9 +4,9 @@ from unittest.mock import patch
 import pytest
 from freezegun import freeze_time
 
-from certifia.utils.logger import Logger
+from app.utils.logger import Logger
 
-TESTED_MODULE = 'certifia.utils.logger'
+TESTED_MODULE = 'app.utils.logger'
 
 
 @freeze_time("2012-01-14")

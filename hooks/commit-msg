@@ -2,7 +2,7 @@
 message_file = ARGV[0]
 message = File.read(message_file)
 
-$regex = /(doc|feat|conf|fix)/
+$regex = /(doc|feat|conf|fix|refacto)/
 
 if !$regex.match(message)
   puts "[POLICY] Your message is not formatted correctly"

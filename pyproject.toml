@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "certifia"
-version = "0.2.0"
+version = "0.3.0"
 description = "our package for certification"
 authors = ["Ismaïl Lachheb <ismael.lachheb@protonmail.com>", "Fabien Roussel <fabien.roussel921@gmail.com>"]
 license = "Close Source"
@@ -20,6 +20,7 @@ jupyter = "^1.0.0"
 flake8 = "^3.9.2"
 mypy = "^0.812"
 pytest-sugar = "^0.9.4"
+black = "^21.5b2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

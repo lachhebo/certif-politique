@@ -9,5 +9,15 @@ install:
 	poetry install
 
 test:
-	poetry run mypy certifia
-	poetry run pytest tests --cov=certifia  --cov-fail-under=80
+	poetry run mypy app
+	poetry run pytest tests --cov=app  --cov-fail-under=80
+
+run:
+	flask run
+
+
+build:
+	docker build -t lachhebo/certifia .
+
+serve:
+	docker run -p 5000:80 lachhebo/certifia

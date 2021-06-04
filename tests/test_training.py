@@ -1,20 +1,20 @@
-from unittest.mock import patch, mock_open
 from unittest import TestCase
+from unittest.mock import patch, mock_open
 
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-from certifia.training import Training
+from app.model import Model
 
-TESTED_MODULE = 'certifia.training'
-LOGGER_MODULE = 'certifia.utils.logger'
+TESTED_MODULE = 'app.model'
+LOGGER_MODULE = 'app.utils.logger'
 
 
 class TestTraining(TestCase):
     def test_instantiate_training_should_return_the_encoder(self):
         # given
         # when
-        result = Training()
+        result = Model()
 
         # then
         self.assertIsInstance(result.rf_regressor, RandomForestRegressor)
@@ -26,7 +26,7 @@ class TestTraining(TestCase):
         y = pd.Series(name="RETARD A L'ARRIVEE", dtype=int)
 
         # when
-        Training().fit(X, y)
+        Model().fit(X, y)
 
         # then
         self.assertEqual(mock_rf_fit.call_count, 1)
@@ -39,14 +39,14 @@ class TestTraining(TestCase):
         expected = [0]
 
         # when
-        result = Training().predict(X)
+        result = Model().predict(X)
 
         # then
         self.assertEqual(mock_rf_predict.call_count, 1)
         self.assertEqual(result, expected)
 
     @patch('logging.Logger.info')
-    @patch(f'{TESTED_MODULE}.Training.predict')
+    @patch(f'{TESTED_MODULE}.Model.predict')
     def test_score_should_logged_metrics(self, mock_training_pred, mock_logger):
         # given
         X = pd.DataFrame(columns=["Col_Train_1", "Col_Train_2"], dtype=int)
@@ -54,7 +54,7 @@ class TestTraining(TestCase):
         mock_training_pred.return_value = [0, 0]
 
         # when
-        Training().score(X, y)
+        Model().eval_model(X, y)
 
         # then
         self.assertEqual(mock_logger.call_count, 4)
@@ -64,7 +64,7 @@ class TestTraining(TestCase):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When
-            Training().save_model()
+            Model().save_model()
 
         # Then
         self.assertEqual(mock_open_method.call_count, 1)
@@ -75,7 +75,7 @@ class TestTraining(TestCase):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When
-            Training().load_model()
+            Model().load_model()
 
         # Then
         self.assertEqual(mock_open_method.call_count, 1)
