@@ -4,7 +4,7 @@ import pandas as pd
 from pandas._testing import assert_frame_equal
 from sklearn.preprocessing import LabelEncoder
 
-from app.utils.multi_column_label_encode import MultiColumnLabelEncoder
+from app.ml.multi_column_label_encode import MultiColumnLabelEncoder
 
 TESTED_MODULE = 'app.utils.multi_column_label_encode'
 
@@ -15,16 +15,16 @@ class TestMultiColumnLabelEncoder(TestCase):
         # when
         result = MultiColumnLabelEncoder()
         # then
-        self.assertEqual(result.columns, None)
+        self.assertEqual(result.encoded_columns, [])
         self.assertEqual(result.label_encoder, {})
 
     def test_instantiate_encoder_with_list_of_columns_should_return_the_encoder(self):
         # given
         columns = ["Col1", "Col2"]
         # when
-        result = MultiColumnLabelEncoder(columns=columns)
+        result = MultiColumnLabelEncoder(encoded_columns=columns)
         # then
-        self.assertEqual(result.columns, columns)
+        self.assertEqual(result.encoded_columns, columns)
 
     def test_encoder_fit_should_return_the_encoder_with_label_encoder_filled(self):
         # given

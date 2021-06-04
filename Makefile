@@ -17,7 +17,7 @@ run:
 
 
 build:
-	docker build -t lachhebo/certifia .
+	docker build -t certifia/certifia .
 
 serve:
-	docker run -p 5000:80 lachhebo/certifia
+	docker run -p 5000:80 certifia/certifia
