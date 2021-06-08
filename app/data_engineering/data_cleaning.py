@@ -1,4 +1,8 @@
+import pickle
+
 import pandas as pd
+
+from app import ROOT_PATH
 
 
 class DataCleaning:
@@ -42,3 +46,25 @@ class DataCleaning:
         df = self.fit_drop(df)
         df.loc[:, 'DATE'] = pd.to_datetime(df['DATE'])
         return df
+
+    def save_cleaner(self, path=None) -> None:
+        """
+        Save to file in the current working directory
+        """
+        if path is None:
+            path = (ROOT_PATH / "data" / "output" / "data_cleaner.pkl").resolve()
+        with open(path, "wb") as file:
+            pickle.dump(self, file)
+
+    def load_cleaner(self, path=None):
+        """
+        Load to file in the current working directory
+        """
+        if path is None:
+            path = (ROOT_PATH / "data" / "output" / "data_cleaner.pkl").resolve()
+        with open(path, "rb") as file:
+            pickle_data_cleaning = pickle.load(file)
+            self.features_columns = pickle_data_cleaning.features_columns
+            self.label = pickle_data_cleaning.label
+            self.cie_by_avion = pickle_data_cleaning.cie_by_avion
+        return self

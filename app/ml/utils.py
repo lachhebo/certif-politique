@@ -32,38 +32,17 @@ def prediction(df, form):
 
     if bool(form.get("retard_arrivee")):
         # Load data cleaning
-        cleaning = DataCleaning(
-            features_columns=[
-                "IDENTIFIANT",
-                "VOL",
-                "CODE AVION",
-                "AEROPORT DEPART",
-                "AEROPORT ARRIVEE",
-                "DEPART PROGRAMME",
-                "TEMPS DE DEPLACEMENT A TERRE AU DECOLLAGE",
-                "TEMPS PROGRAMME",
-                "DISTANCE",
-                "TEMPS DE DEPLACEMENT A TERRE A L'ATTERRISSAGE",
-                "ARRIVEE PROGRAMMEE",
-                "COMPAGNIE AERIENNE",
-                "NOMBRE DE PASSAGERS",
-                "DATE",
-                "NIVEAU DE SECURITE",
-            ],
-            label="RETARD A L'ARRIVEE",
-        )
-        cleaned_df = cleaning.drop_na(df)
+        cleaning = DataCleaning(None, None).load_cleaner((ROOT_PATH / "data" / "output" / "data_cleaner.pkl").resolve())
+        cleaned_df = cleaning.transform(df)
 
-        print(f"{ROOT_PATH}/data/output/feature_engineering.pkl")
-        print(f"{ROOT_PATH}/models/rf_model.pkl")
         # Load feature Engineering
         feature_engineering = load_feature_engineering(
-            path=f"{ROOT_PATH}/data/output/feature_engineering.pkl"
+            path=(ROOT_PATH / "data" / "output" / "feature_engineering.pkl").resolve()
         )
         df_engineered = feature_engineering.transform(cleaned_df)
 
         # load training
-        training = Model().load_model(path=f"{ROOT_PATH}/models/rf_model.pkl")
+        training = Model().load_model(path=(ROOT_PATH / "models" / "rf_model.pkl").resolve())
         y_pred = training.predict(df_engineered)
 
         df_prediction.loc[

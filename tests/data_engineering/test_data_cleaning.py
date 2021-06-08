@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch, mock_open
 
 import pandas as pd
 from pandas.testing import assert_frame_equal
@@ -32,3 +33,25 @@ class TestDataCleaning(TestCase):
 
         # then
         assert_frame_equal(expected_df.reset_index(drop=True), output_df.reset_index(drop=True), check_dtype=False)
+
+    @patch('pickle.dump')
+    def test_save_data_cleaning(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            DataCleaning([], '').save_cleaner()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)
+
+    @patch('pickle.load')
+    def test_load_data_cleaning(self, mock_pickle):
+        # Given
+        with patch('builtins.open', mock_open()) as mock_open_method:
+            # When
+            DataCleaning([], '').load_cleaner()
+
+        # Then
+        self.assertEqual(mock_open_method.call_count, 1)
+        self.assertEqual(mock_pickle.call_count, 1)

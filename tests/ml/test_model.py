@@ -59,7 +59,7 @@ class TestModel(TestCase):
         self.assertEqual(mock_logger.call_count, 4)
 
     @patch('pickle.dump')
-    def test_save_feature_engineering(self, mock_pickle):
+    def test_save_model(self, mock_pickle):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When
@@ -70,7 +70,7 @@ class TestModel(TestCase):
         self.assertEqual(mock_pickle.call_count, 1)
 
     @patch('pickle.load')
-    def test_load_feature_engineering(self, mock_pickle):
+    def test_load_model(self, mock_pickle):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When

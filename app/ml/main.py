@@ -64,12 +64,14 @@ def main():
     logger.info("Model trained.")
 
     # TODO: add date in model
+    cleaning.save_cleaner(path=(ROOT_PATH / "data" / "output" / "data_cleaner.pkl").resolve())
+    logger.info("Data Cleaner saved.")
+
     feature_engineering.save_feature_engineering(
         path=(ROOT_PATH / "data" / "output" / "feature_engineering.pkl").resolve()
     )
-    logger.info("Model saved.")
-
     logger.info("Feature Engineering saved.")
+
     model.save_model(path=(ROOT_PATH / "models" / "rf_model.pkl").resolve())
     logger.info("Model saved.")
 
