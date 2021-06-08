@@ -15,9 +15,7 @@ def main():
     datasets = read_db()
     logger.info("Db read.")
 
-    vols_df = pd.concat([datasets["batch1"]["vols"], datasets["batch2"]["vols"]]).tail(
-        250000
-    )
+    vols_df = pd.concat([datasets["batch1"]["vols"], datasets["batch2"]["vols"]])
     df_airport = pd.concat([datasets["batch1"]['aeroports'], datasets["batch2"]['aeroports']])
 
     FEATURES = datasets["test"]["vols"].columns.tolist()
