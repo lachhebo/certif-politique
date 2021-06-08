@@ -15,8 +15,8 @@ def main():
     datasets = read_db()
     logger.info("Db read.")
 
-    vols_df = pd.concat([datasets["batch1"]["vols"], datasets["batch2"]["vols"]]).head(
-        10000
+    vols_df = pd.concat([datasets["batch1"]["vols"], datasets["batch2"]["vols"]]).tail(
+        250000
     )
     df_airport = pd.concat([datasets["batch1"]['aeroports'], datasets["batch2"]['aeroports']])
 
@@ -26,7 +26,7 @@ def main():
 
     logger.info("Data cleaning...")
     cleaning = DataCleaning(features_columns=FEATURES, label=label)
-    cleaned_vols_df = cleaning.cleaning(vols_df)
+    cleaned_vols_df = cleaning.fit(vols_df)
     logger.info("OK")
 
     logger.info("Split features from label.")

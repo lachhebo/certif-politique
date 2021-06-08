@@ -56,6 +56,7 @@ class FeatureEngineering:
 
     def fit(self, dataframe: pd.DataFrame):
         X = parse_date(dataframe)
+
         X.loc[
             :, "NOMBRE DECOLLAGE PAR AEROPORT PAR JOUR"
         ] = self.get_average_plane_take_off_or_landing_by_day(X, "AEROPORT DEPART")

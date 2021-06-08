@@ -28,7 +28,7 @@ class TestDataCleaning(TestCase):
         })
 
         # when
-        output_df = data_cleaning.cleaning(df)
+        output_df = data_cleaning.drop_na(df)
 
         # then
         assert_frame_equal(expected_df.reset_index(drop=True), output_df.reset_index(drop=True), check_dtype=False)
