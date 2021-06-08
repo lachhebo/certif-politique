@@ -4,20 +4,19 @@ from unittest.mock import patch, mock_open
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-from app.model import Model
+from app.ml.model import Model
 
-TESTED_MODULE = 'app.model'
-LOGGER_MODULE = 'app.utils.logger'
+TESTED_MODULE = 'app.ml.model'
 
 
-class TestTraining(TestCase):
+class TestModel(TestCase):
     def test_instantiate_training_should_return_the_encoder(self):
         # given
         # when
         result = Model()
 
         # then
-        self.assertIsInstance(result.rf_regressor, RandomForestRegressor)
+        self.assertIsInstance(result.model, RandomForestRegressor)
 
     @patch('sklearn.ensemble.RandomForestRegressor.fit')
     def test_fit_should_train_algorithm(self, mock_rf_fit):
@@ -45,7 +44,7 @@ class TestTraining(TestCase):
         self.assertEqual(mock_rf_predict.call_count, 1)
         self.assertEqual(result, expected)
 
-    @patch('logging.Logger.info')
+    @patch('app.utils.logger.Logger.info')
     @patch(f'{TESTED_MODULE}.Model.predict')
     def test_score_should_logged_metrics(self, mock_training_pred, mock_logger):
         # given
@@ -54,7 +53,7 @@ class TestTraining(TestCase):
         mock_training_pred.return_value = [0, 0]
 
         # when
-        Model().eval_model(X, y)
+        Model().compute_metrics(X, y)
 
         # then
         self.assertEqual(mock_logger.call_count, 4)
