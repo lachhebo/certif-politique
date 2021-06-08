@@ -29,7 +29,7 @@ class Model:
         return self
 
     def predict(self, x: pd.DataFrame):
-        return self.model.predict(x)
+        return np.around(self.model.predict(x))
 
     def compute_metrics(self, x: pd.DataFrame, y) -> None:
         y_pred = self.predict(x)
