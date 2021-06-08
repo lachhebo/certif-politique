@@ -18,6 +18,7 @@ def main():
     vols_df = pd.concat([datasets["batch1"]["vols"], datasets["batch2"]["vols"]]).head(
         10000
     )
+    df_airport = pd.concat([datasets["batch1"]['aeroports'], datasets["batch2"]['aeroports']])
 
     FEATURES = datasets["test"]["vols"].columns.tolist()
     label = "RETARD A L'ARRIVEE"
@@ -53,6 +54,7 @@ def main():
             "AEROPORT ARRIVEE",
             "COMPAGNIE AERIENNE",
         ],
+        df_airport=df_airport
     )
     X = feature_engineering.fit(X)
     logger.info("OK")
@@ -63,7 +65,7 @@ def main():
 
     # TODO: add date in model
     feature_engineering.save_feature_engineering(
-        path="data/output/feature_engineering.pkl"
+        path=(ROOT_PATH / "data" / "output" / "feature_engineering.pkl").resolve()
     )
     logger.info("Model saved.")
 

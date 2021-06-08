@@ -54,6 +54,8 @@ def prediction(df, form):
         )
         cleaned_df = cleaning.cleaning(df)
 
+        print(f"{ROOT_PATH}/data/output/feature_engineering.pkl")
+        print(f"{ROOT_PATH}/models/rf_model.pkl")
         # Load feature Engineering
         feature_engineering = load_feature_engineering(
             path=f"{ROOT_PATH}/data/output/feature_engineering.pkl"
