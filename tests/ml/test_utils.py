@@ -32,7 +32,7 @@ class TestMLUtils(TestCase):
         # Then
         assert_frame_equal(result, df)
 
-    @patch('app.data_engineering.data_cleaning.DataCleaning.cleaning')
+    @patch('app.data_engineering.data_cleaning.DataCleaning.drop_na')
     @patch('app.ml.utils.load_feature_engineering')
     @patch(f'{FEATURE_ENGINEERING_MODULE}.FeatureEngineering.transform')
     @patch(f'{TRAINING_MODULE}.Model.load_model')
@@ -43,7 +43,7 @@ class TestMLUtils(TestCase):
             mock_load_model,
             mock_transform_feat_engineering,
             mock_load_feature_engineering,
-            mock_cleaning,
+            mock_drop_na,
     ):
         # Given
         df = pd.DataFrame(columns=['IDENTIFIANT'])
@@ -63,4 +63,4 @@ class TestMLUtils(TestCase):
         assert mock_transform_feat_engineering.call_count == 1
         assert mock_load_model.call_count == 1
         assert mock_predict.call_count == 1
-        assert mock_cleaning.call_count == 1
+        assert mock_drop_na.call_count == 1

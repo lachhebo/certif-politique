@@ -52,7 +52,7 @@ def prediction(df, form):
             ],
             label="RETARD A L'ARRIVEE",
         )
-        cleaned_df = cleaning.cleaning(df)
+        cleaned_df = cleaning.drop_na(df)
 
         print(f"{ROOT_PATH}/data/output/feature_engineering.pkl")
         print(f"{ROOT_PATH}/models/rf_model.pkl")
