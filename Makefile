@@ -17,7 +17,7 @@ run:
 
 
 build:
-	docker build -t certifia/certifia .
+	docker build -t certifia .
 
 serve:
-	docker run -p 5000:80 certifia/certifia
+	docker run -p 5000:80 certifia
