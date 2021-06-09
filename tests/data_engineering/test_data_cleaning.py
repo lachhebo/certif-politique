@@ -35,7 +35,7 @@ class TestDataCleaning(TestCase):
         assert_frame_equal(expected_df.reset_index(drop=True), output_df.reset_index(drop=True), check_dtype=False)
 
     @patch('pickle.dump')
-    def test_save_data_cleaning(self, mock_pickle):
+    def test_save_data_cleaning_should_call_open_methof_and_save_cleaner(self, mock_pickle):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When
@@ -46,7 +46,7 @@ class TestDataCleaning(TestCase):
         self.assertEqual(mock_pickle.call_count, 1)
 
     @patch('pickle.load')
-    def test_load_data_cleaning(self, mock_pickle):
+    def test_load_data_cleaning_should_call_open_method_and_return_a_data_cleaning_instance(self, mock_pickle):
         # Given
         with patch('builtins.open', mock_open()) as mock_open_method:
             # When
