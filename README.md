@@ -1,4 +1,3 @@
-
 # certification IA aviation 🤓
 
 
@@ -41,16 +40,15 @@ to run tests, run:
 
 to build the docker image (the artifact), run:
 
-    make test
+    make build
 
 to start the api, run:
 
-	make run
-
+    make run
 
 to start a container with our docker image, run ,
 
-	make serve
+    make serve
 
 take a look at the CONTRIBUTING.md for more information about our workflow 
 
