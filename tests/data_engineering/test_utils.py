@@ -81,7 +81,6 @@ class TestDataEngineeringUtils(TestCase):
 
         # When
         result = get_airport_dict(df_airport)
-        print(result)
         # Then
         self.assertDictEqual(result, expected)
 

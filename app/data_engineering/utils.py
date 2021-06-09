@@ -10,34 +10,38 @@ from app import ROOT_PATH
 def get_airport_dict(df_airport: pd.DataFrame) -> dict:
     if df_airport is None:
         return {}
-    df_airport.drop_duplicates(inplace=True)
 
-    duplicate_airport = df_airport.loc[
-        df_airport.duplicated(subset=['CODE IATA'], keep=False),
-        ['CODE IATA', 'PRIX RETARD PREMIERE 20 MINUTES', 'PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']].groupby(
-        by=['CODE IATA']).mean().to_dict(orient='index')
+    def __remove_duplicates_and_compute_mean_for_pricing(df_airport: pd.DataFrame) -> pd.DataFrame:
+        df_airport.drop_duplicates(inplace=True)
 
-    df_airport.drop_duplicates(inplace=True, subset=['CODE IATA'])
+        duplicate_airport = df_airport.loc[
+            df_airport.duplicated(subset=['CODE IATA'], keep=False),
+            ['CODE IATA', 'PRIX RETARD PREMIERE 20 MINUTES', 'PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']].groupby(
+            by=['CODE IATA']).mean().to_dict(orient='index')
 
-    for code_iata in duplicate_airport.keys():
-        df_airport.loc[
-            df_airport['CODE IATA'] == code_iata,
-            ['PRIX RETARD PREMIERE 20 MINUTES']
-        ] = df_airport.loc[
-            df_airport['CODE IATA'] == code_iata,
-            ['PRIX RETARD PREMIERE 20 MINUTES']
-        ].apply(lambda x: duplicate_airport[code_iata]['PRIX RETARD PREMIERE 20 MINUTES'],
-                axis=1)
+        df_airport.drop_duplicates(inplace=True, subset=['CODE IATA'])
 
-        df_airport.loc[
-            df_airport['CODE IATA'] == code_iata,
-            ['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']
-        ] = df_airport.loc[
-            df_airport['CODE IATA'] == code_iata,
-            ['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']
-        ].apply(lambda x: duplicate_airport[code_iata]['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES'],
-                axis=1)
+        for code_iata in duplicate_airport.keys():
+            df_airport.loc[
+                df_airport['CODE IATA'] == code_iata,
+                ['PRIX RETARD PREMIERE 20 MINUTES']
+            ] = df_airport.loc[
+                df_airport['CODE IATA'] == code_iata,
+                ['PRIX RETARD PREMIERE 20 MINUTES']
+            ].apply(lambda x: duplicate_airport[code_iata]['PRIX RETARD PREMIERE 20 MINUTES'],
+                    axis=1)
 
+            df_airport.loc[
+                df_airport['CODE IATA'] == code_iata,
+                ['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']
+            ] = df_airport.loc[
+                df_airport['CODE IATA'] == code_iata,
+                ['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES']
+            ].apply(lambda x: duplicate_airport[code_iata]['PRIS RETARD POUR CHAQUE MINUTE APRES 10 MINUTES'],
+                    axis=1)
+        return df_airport
+
+    df_airport = __remove_duplicates_and_compute_mean_for_pricing(df_airport)
     df_airport['LONGITUDE'] = df_airport['LONGITUDE'].astype('float')
     df_airport['LATITUDE'] = df_airport['LATITUDE'].astype('float')
     df_airport['LONGITUDE TRONQUEE'] = df_airport['LONGITUDE'].apply(round)
